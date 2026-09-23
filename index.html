@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Wars Canon Media Chronology — Complete</title>
+<style>
+  :root{
+    --paper:#05070d;--paper-2:#0d111c;--paper-3:#161d30;--ink:#e8ecf5;--ink-soft:#8b93a8;
+    --line:#1e2740;--gold:#f2c14e;--gold-deep:#f2c14e;--purple:#c98bdb;--shadow:rgba(0,0,0,.5);
+    --f-F:#d9a520;--f-N:#5f74d6;--f-JR:#7d8ce0;--f-YR:#2f9d9d;--f-VG:#3f9d54;
+    --f-TV:#d64a44;--f-C:#d1772a;--f-SS:#9a6cd4;--f-A:#d15a8f;--f-P:#828aa0;--f-RPG:#a5713f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);
+    background-image:radial-gradient(ellipse at top,#0a1020 0%,#05070d 55%),radial-gradient(circle at 88% 4%,rgba(201,139,219,.06),transparent 42%);
+    background-attachment:fixed;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px;}
+  header.hero{padding:60px 0 26px;border-bottom:3px double var(--gold);margin-bottom:8px;}
+  .eyebrow{font-family:"Futura","Trebuchet MS","Helvetica Neue",sans-serif;text-transform:uppercase;letter-spacing:.42em;font-size:12px;font-weight:700;color:var(--gold-deep);margin:0 0 14px;}
+  h1{font-family:"Futura","Trebuchet MS","Helvetica Neue",sans-serif;font-weight:800;font-size:clamp(32px,5.5vw,58px);line-height:.98;letter-spacing:-.01em;margin:0 0 16px;text-transform:uppercase;}
+  h1 .thin{display:block;font-weight:300;font-size:.4em;letter-spacing:.26em;color:var(--ink-soft);margin-top:14px;}
+  .lede{max-width:660px;font-size:17.5px;color:var(--ink-soft);margin:0 0 8px;}
+  .lede b{color:var(--ink);font-weight:700;}
+  .src{font-size:13px;color:var(--ink-soft);margin-top:14px;}
+  .src a{color:var(--gold-deep);text-decoration:none;border-bottom:1px solid var(--line);}
+  .controls{position:sticky;top:0;z-index:20;background:linear-gradient(var(--paper),var(--paper) 78%,rgba(245,239,225,0));padding:14px 0 16px;margin-bottom:6px;}
+  .controls-inner{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;box-shadow:0 2px 10px var(--shadow);}
+  .ctl-row{display:flex;flex-wrap:wrap;gap:11px;align-items:center;}
+  .ctl-row + .ctl-row{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);}
+  .search{flex:1 1 240px;min-width:200px;display:flex;align-items:center;gap:9px;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 13px;}
+  .search input{border:0;background:transparent;outline:none;width:100%;font-family:inherit;font-size:15px;color:var(--ink);}
+  .search svg{flex:none;opacity:.5;}
+  .lbl{font-family:"Futura","Trebuchet MS",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);margin-right:2px;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto;}
+  .chip{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:20px;cursor:pointer;user-select:none;border:1.5px solid var(--c,#999);color:var(--c,#555);background:transparent;display:inline-flex;align-items:center;gap:6px;transition:.15s;}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c);}
+  .chip.on{background:var(--c);color:#0b0f1a;}
+  .chip.on .dot{background:rgba(0,0,0,.55);}
+  .chip .n{opacity:.7;font-size:10px;}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;}
+  .seg button{font-family:"Futura","Trebuchet MS",sans-serif;font-size:12px;font-weight:600;padding:8px 14px;border:0;background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:.15s;}
+  .seg button.on{background:var(--ink);color:var(--paper);}
+  .seg button + button{border-left:1px solid var(--line);}
+  .mini-btn{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11.5px;font-weight:600;padding:7px 12px;border:1px solid var(--line);border-radius:7px;background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:.15s;}
+  .mini-btn:hover{border-color:var(--gold);color:var(--gold-deep);}
+  .count{font-size:13px;color:var(--ink-soft);font-family:"Futura","Trebuchet MS",sans-serif;}
+  .count b{color:var(--ink);}
+  .eranav{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 6px;}
+  .eranav a{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11px;font-weight:600;text-decoration:none;color:var(--ink);padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper-2);border-left:4px solid var(--e,#999);transition:.15s;}
+  .eranav a:hover{background:var(--paper-3);border-color:var(--gold-deep);transform:translateY(-1px);}
+  .eranav a .c{opacity:.6;}
+  .era{margin:38px 0 8px;scroll-margin-top:150px;}
+  .era-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:11px;margin-bottom:18px;border-bottom:2px solid var(--e);}
+  .era-num{font-family:"Futura","Trebuchet MS",sans-serif;font-weight:800;font-size:14px;color:#0b0f1a;background:var(--e);border-radius:6px;padding:4px 10px;}
+  .era-title{font-family:"Futura","Trebuchet MS",sans-serif;font-weight:800;font-size:clamp(20px,3.2vw,28px);text-transform:uppercase;margin:0;flex:1 1 auto;}
+  .era-span{font-family:"Futura","Trebuchet MS",sans-serif;font-size:13px;font-weight:600;color:var(--e);}
+  .era-tally{font-size:13px;color:var(--ink-soft);font-family:"Futura","Trebuchet MS",sans-serif;}
+  .era-desc{max-width:740px;color:var(--ink-soft);font-size:15px;margin:-6px 0 20px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+  .card{display:block;position:relative;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;box-shadow:0 1px 3px var(--shadow);transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;overflow:hidden;}
+  .card:hover{background:var(--paper-3);border-color:var(--gold-deep);transform:translateY(-2px);box-shadow:0 8px 20px var(--shadow);}
+  .c-label{display:block;padding-right:26px;font-family:"Futura","Trebuchet MS",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c,var(--gold-deep));}
+  .c-title{font-size:19px;font-weight:600;line-height:1.22;letter-spacing:-.01em;margin:8px 0 4px;padding-right:22px;color:var(--ink);}
+  .c-title em{font-style:italic;}
+  .c-yrs{display:block;font-size:12.5px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .c-desc{font-size:13px;line-height:1.5;color:#b6bdcc;margin:10px 0 0;}
+  .c-count{display:inline-block;margin-top:14px;font-size:11px;letter-spacing:.06em;color:var(--ink-soft);border:1px solid var(--line);border-radius:6px;padding:3px 9px;}
+  .c-arrow{position:absolute;top:19px;right:17px;font-size:15px;line-height:1;color:var(--ink-soft);transition:transform .16s,color .16s;}
+  .card:hover .c-arrow{transform:translate(3px,-3px);color:var(--gold);}
+  .empty{padding:60px 0;text-align:center;color:var(--ink-soft);font-size:17px;}
+  footer{margin-top:44px;padding:26px 0 70px;border-top:3px double var(--gold);color:var(--ink-soft);font-size:13px;}
+  footer b{color:var(--ink);}
+  .toTop{position:fixed;right:20px;bottom:24px;z-index:30;font-family:"Futura","Trebuchet MS",sans-serif;font-size:12px;font-weight:700;background:var(--gold);color:#0b0f1a;border:0;border-radius:22px;padding:10px 16px;cursor:pointer;box-shadow:0 4px 14px var(--shadow);opacity:0;pointer-events:none;transition:.2s;}
+  .toTop.show{opacity:1;pointer-events:auto;}
+  @media (max-width:560px){.rel{display:none;}.grid{grid-template-columns:1fr;}}
+  @media print{.controls,.eranav,.toTop{display:none;}body{background:#fff;}.era,.card{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">The Complete Galactic Almanac &bull; In-Universe Chronology</p>
+    <h1>Star Wars<span class="thin">Every Canon Story, Placed on the Galactic Timeline</span></h1>
+    <p class="lede">The full run of canon films, series, novels, comics, games, short stories, and audio dramas — ordered by <b>when they happen</b>, in years <b>Before</b> and <b>After the Battle of Yavin</b> (BBY / ABY).</p>
+    <p class="lede">Filter by format, search any title, flip between story-order and release-order, and jump to any of the eight eras.</p>
+    <p class="src">Every entry parsed live from <a href="https://starwars.fandom.com/wiki/Timeline_of_canon_media" target="_blank" rel="noopener">Wookieepedia&rsquo;s Timeline of canon media</a>. Era groupings are derived from each entry&rsquo;s in-universe date.</p>
+  </header>
+
+  <div class="controls">
+    <div class="controls-inner">
+      <div class="ctl-row">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input id="q" type="text" placeholder="Search all titles, e.g. Thrawn, Mandalorian, Aphra, Andor&hellip;" autocomplete="off">
+        </label>
+        <div class="seg" id="sortseg">
+          <button data-sort="story" class="on">Story order</button>
+          <button data-sort="release">Release order</button>
+        </div>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="ctl-row">
+        <span class="lbl">Format</span>
+        <div class="chips" id="chips"></div>
+        <button class="mini-btn" id="allbtn">All</button>
+        <button class="mini-btn" id="nonebtn">None</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="eranav" id="eranav"></nav>
+  <main id="stage"></main>
+
+  <footer>
+    <b>How dating works:</b> The galaxy&rsquo;s calendar pivots on the Battle of Yavin — the destruction of the first Death Star in <em>A New Hope</em> (0). Everything earlier counts down in <b>BBY</b>; everything later counts up in <b>ABY</b>. Placement follows in-universe events, so a 2021 novel can sit centuries before a 1999 film.
+    <br><br>All entries parsed from Wookieepedia&rsquo;s <a href="https://starwars.fandom.com/wiki/Timeline_of_canon_media" style="color:var(--gold-deep)" target="_blank" rel="noopener">Timeline of canon media</a>. A dagger on the source marks entries whose exact placement is currently unknown; blank in-universe dates inherit the surrounding period.
+  </footer>
+</div>
+<button class="toTop" id="toTop">↑ Top</button>
+
+
+<script>
+const FORMATS = {
+  F:{name:"Films",css:"--f-F"}, TV:{name:"Television",css:"--f-TV"},
+  N:{name:"Novels",css:"--f-N"}, JR:{name:"Junior Novels",css:"--f-JR"},
+  YR:{name:"Young Readers",css:"--f-YR"}, C:{name:"Comics",css:"--f-C"},
+  SS:{name:"Short Stories",css:"--f-SS"}, A:{name:"Audio",css:"--f-A"},
+  VG:{name:"Video Games",css:"--f-VG"}, RPG:{name:"Tabletop / RPG",css:"--f-RPG"},
+  P:{name:"Promotional",css:"--f-P"}
+};
+const ERAS = [
+  {id:"dawn",n:"I",title:"Dawn of the Galaxy",span:"c. 31,000 – 500 BBY",color:"#7d93aa",
+   desc:"Myth and legend at the edge of recorded history — the galaxy&rsquo;s oldest tales, and the far-past film still to come."},
+  {id:"highrepublic",n:"II",title:"The High Republic",span:"c. 500 – 100 BBY",color:"#f2c14e",
+   desc:"The Jedi at their zenith, a galaxy of Starlight Beacons and Nihil marauders, reaching up to the shadows of The Acolyte."},
+  {id:"fall",n:"III",title:"Fall of the Jedi",span:"c. 100 – 19 BBY",color:"#d64a44",
+   desc:"The prequel trilogy and the Clone Wars — the slow corruption of the Republic and the Order&rsquo;s march to ruin."},
+  {id:"reign",n:"IV",title:"Reign of the Empire",span:"19 – 0 BBY",color:"#6b83b8",
+   desc:"The dark times. Order 66&rsquo;s survivors scatter as the first embers of rebellion catch — Bad Batch, Rebels, Andor, Rogue One."},
+  {id:"rebellion",n:"V",title:"Age of Rebellion",span:"0 – 4 ABY",color:"#e5842f",
+   desc:"The original trilogy and the galactic civil war — from a farm boy on Tatooine to the second Death Star over Endor."},
+  {id:"newrepublic",n:"VI",title:"The New Republic",span:"4 – 34 ABY",color:"#3fa870",
+   desc:"The Empire&rsquo;s last stand at Jakku, a fledgling Republic, and a lone gunfighter with a foundling — the streaming-era frontier."},
+  {id:"firstorder",n:"VII",title:"Rise of the First Order",span:"34 – 35 ABY",color:"#d1495f",
+   desc:"A generation later a new evil rises from the Unknown Regions and the last Skywalkers answer the call — the sequel trilogy."},
+  {id:"beyond",n:"VIII",title:"Beyond",span:"35+ ABY",color:"#a877e0",
+   desc:"The frontier of the timeline — announced films and stories set after the fall of the First Order."}
+];
+const ERA_INDEX = {}; ERAS.forEach((e,i)=>ERA_INDEX[e.id]=i);
+
+// Records live in data.json (structured, pre-parsed). Loaded via fetch below.
+let DATA = [];
+
+const state = { q:"", sort:"story", active:new Set(Object.keys(FORMATS)) };
+
+// counts per format
+const chipsEl=document.getElementById("chips");
+function buildChips(){
+  const fmtCounts = {}; Object.keys(FORMATS).forEach(k=>fmtCounts[k]=0);
+  DATA.forEach(d=>{ if(fmtCounts[d.f]!==undefined) fmtCounts[d.f]++; });
+  chipsEl.innerHTML="";
+  Object.entries(FORMATS).forEach(([code,info])=>{
+    if(!fmtCounts[code]) return;                         // hide formats with zero entries
+    const b=document.createElement("button");
+    b.className="chip on"; b.style.setProperty("--c",`var(${info.css})`); b.dataset.code=code;
+    b.innerHTML=`<span class="dot"></span>${info.name} <span class="n">${fmtCounts[code]}</span>`;
+    b.onclick=()=>{ state.active.has(code)?state.active.delete(code):state.active.add(code); b.classList.toggle("on"); render(); };
+    chipsEl.appendChild(b);
+  });
+}
+function syncChips(){ chipsEl.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",state.active.has(c.dataset.code))); }
+document.getElementById("allbtn").onclick=()=>{state.active=new Set(Object.keys(FORMATS));syncChips();render();};
+document.getElementById("nonebtn").onclick=()=>{state.active=new Set();syncChips();render();};
+document.getElementById("q").addEventListener("input",e=>{state.q=e.target.value.toLowerCase().trim();render();});
+document.querySelectorAll("#sortseg button").forEach(b=>{b.onclick=()=>{document.querySelectorAll("#sortseg button").forEach(x=>x.classList.remove("on"));b.classList.add("on");state.sort=b.dataset.sort;render();};});
+
+const navEl=document.getElementById("eranav");
+const stage=document.getElementById("stage");
+const countEl=document.getElementById("count");
+
+function matches(item){
+  if(!state.active.has(item.f)) return false;
+  if(state.q){
+    const hay=(item.t+" "+item.disp+" "+FORMATS[item.f].name+" "+(item.note||"")).toLowerCase();
+    if(!hay.includes(state.q)) return false;
+  }
+  return true;
+}
+function cardHTML(item,i){
+  const info=FORMATS[item.f]||{name:item.f,css:"--f-P"};
+  const rel=item.rel?`<span class="rel">${item.rel}</span>`:`<span class="rel">TBA</span>`;
+  const anim = i<80 ? `animation:rise .45s ease both;animation-delay:${Math.min(i*10,300)}ms` : "";
+  return `<article class="card" style="--c:var(${info.css});${anim}">
+    <span class="c-label">${info.name}</span>
+    <p class="c-title">${item.t}</p>
+    <span class="c-yrs">${item.disp||"Placement uncertain"}</span>
+    ${item.note?`<p class="c-desc">${item.note}</p>`:""}
+    <span class="c-count">${item.rel?("Released "+item.rel):"Release TBA"}</span>
+    <span class="c-arrow" aria-hidden="true">&#8599;</span></article>`;
+}
+const styleSheet=document.createElement("style");
+styleSheet.textContent="@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}";
+document.head.appendChild(styleSheet);
+
+function buildNav(counts){
+  navEl.innerHTML="";
+  ERAS.forEach(er=>{
+    if(!counts[er.id]) return;
+    const a=document.createElement("a");
+    a.href="#era-"+er.id; a.style.setProperty("--e",er.color);
+    a.innerHTML=`${er.n}. ${er.title} <span class="c">${counts[er.id]}</span>`;
+    navEl.appendChild(a);
+  });
+}
+
+function render(){
+  syncChips();
+  const list=DATA.filter(matches);
+  countEl.innerHTML=`<b>${list.length}</b> of ${DATA.length} entries`;
+  if(list.length===0){ navEl.style.display="none"; stage.innerHTML=`<div class="empty">No media matches these filters.</div>`; return; }
+
+  if(state.sort==="release"){
+    navEl.style.display="none";
+    const sorted=[...list].sort((a,b)=>{ if(!a.rel&&!b.rel)return a.i-b.i; if(!a.rel)return 1; if(!b.rel)return -1; return a.rel.localeCompare(b.rel)||a.i-b.i; });
+    stage.innerHTML=`<section class="era"><div class="grid">${sorted.map((it,i)=>cardHTML(it,i)).join("")}</div></section>`;
+    return;
+  }
+  navEl.style.display="flex";
+  const counts={};
+  const byEra={}; ERAS.forEach(e=>byEra[e.id]=[]);
+  list.forEach(it=>byEra[it.era].push(it));
+  ERAS.forEach(e=>{counts[e.id]=byEra[e.id].length;});
+  buildNav(counts);
+  let html="", gi=0;
+  ERAS.forEach(er=>{
+    const items=byEra[er.id]; if(!items.length) return;
+    items.sort((a,b)=>a.y-b.y||a.i-b.i);
+    html+=`<section class="era" id="era-${er.id}" style="--e:${er.color}">
+      <div class="era-head"><span class="era-num">${er.n}</span><h2 class="era-title">${er.title}</h2>
+      <span class="era-span">${er.span}</span><span class="era-tally">${items.length} entries</span></div>
+      <p class="era-desc">${er.desc}</p>
+      <div class="grid">${items.map(it=>cardHTML(it,gi++)).join("")}</div></section>`;
+  });
+  stage.innerHTML=html;
+}
+fetch("data.json")
+  .then(r=>{ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+  .then(recs=>{ DATA = recs.map((d,idx)=>({...d, i:idx})); buildChips(); render(); })
+  .catch(err=>{
+    document.getElementById("stage").innerHTML =
+      `<div class="empty">Couldn&rsquo;t load <code>data.json</code> (${err.message}).<br><br>This page loads its data over the network, so it needs to be served over <b>http://</b> &mdash; open it via GitHub Pages or a local server, not a <code>file://</code> path.</div>`;
+  });
+
+const toTop=document.getElementById("toTop");
+window.addEventListener("scroll",()=>{toTop.classList.toggle("show",window.scrollY>600);});
+toTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+</script>
+</body>
+</html>
