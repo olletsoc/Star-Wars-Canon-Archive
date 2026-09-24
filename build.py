@@ -13,6 +13,7 @@ data.csv columns (this is the source of truth you hand-edit):
     t     title (may contain <em>...</em> for italics)
     rel   real-world release date (YYYY-MM-DD, or blank if unknown/unreleased)
     note  optional note shown on the card (or blank)
+    url   optional link to the media (blank if none yet)
 
 The "era" field in data.json is DERIVED from y — do not store it in the CSV.
 Change a row's y and rebuild, and its era updates automatically.
@@ -64,6 +65,7 @@ def main():
                 raise SystemExit(f"data.csv line {lineno}: y must be an integer, got {y_raw!r}")
             rel = (r.get("rel") or "").strip()
             note = (r.get("note") or "").strip()
+            url = (r.get("url") or "").strip()
             rows.append({
                 "era": era_of(y),
                 "f": (r.get("f") or "").strip(),
@@ -72,13 +74,14 @@ def main():
                 "y": y,
                 "rel": rel or None,
                 "note": note or None,
+                "url": url or None,
             })
 
     def enc(v):
         return "null" if v is None else json.dumps(v, ensure_ascii=False)
 
     lines = [
-        '  {"era":%s,"f":%s,"t":%s,"disp":%s,"y":%d,"rel":%s,"note":%s}' % (
+        '  {"era":%s,"f":%s,"t":%s,"disp":%s,"y":%d,"rel":%s,"note":%s,"url":%s}' % (
             json.dumps(o["era"], ensure_ascii=False),
             json.dumps(o["f"], ensure_ascii=False),
             json.dumps(o["t"], ensure_ascii=False),
@@ -86,6 +89,7 @@ def main():
             o["y"],
             enc(o["rel"]),
             enc(o["note"]),
+            enc(o["url"]),
         )
         for o in rows
     ]

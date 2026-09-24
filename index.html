@@ -60,7 +60,7 @@
   .era-tally{font-size:13px;color:var(--ink-soft);font-family:"Futura","Trebuchet MS",sans-serif;}
   .era-desc{max-width:740px;color:var(--ink-soft);font-size:15px;margin:-6px 0 20px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-  .card{display:block;position:relative;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;box-shadow:0 1px 3px var(--shadow);transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;overflow:hidden;}
+  .card{display:block;position:relative;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;box-shadow:0 1px 3px var(--shadow);transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;overflow:hidden;text-decoration:none;color:inherit;}
   .card:hover{background:var(--paper-3);border-color:var(--gold-deep);transform:translateY(-2px);box-shadow:0 8px 20px var(--shadow);}
   .c-label{display:block;padding-right:26px;font-family:"Futura","Trebuchet MS",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c,var(--gold-deep));}
   .c-title{font-size:19px;font-weight:600;line-height:1.22;letter-spacing:-.01em;margin:8px 0 4px;padding-right:22px;color:var(--ink);}
@@ -70,6 +70,8 @@
   .c-count{display:inline-block;margin-top:14px;font-size:11px;letter-spacing:.06em;color:var(--ink-soft);border:1px solid var(--line);border-radius:6px;padding:3px 9px;}
   .c-arrow{position:absolute;top:19px;right:17px;font-size:15px;line-height:1;color:var(--ink-soft);transition:transform .16s,color .16s;}
   .card:hover .c-arrow{transform:translate(3px,-3px);color:var(--gold);}
+  .card.nolink{cursor:default;}
+  .card.nolink .c-arrow{display:none;}
   .empty{padding:60px 0;text-align:center;color:var(--ink-soft);font-size:17px;}
   footer{margin-top:44px;padding:26px 0 70px;border-top:3px double var(--gold);color:var(--ink-soft);font-size:13px;}
   footer b{color:var(--ink);}
@@ -191,15 +193,17 @@ function matches(item){
 }
 function cardHTML(item,i){
   const info=FORMATS[item.f]||{name:item.f,css:"--f-P"};
-  const rel=item.rel?`<span class="rel">${item.rel}</span>`:`<span class="rel">TBA</span>`;
   const anim = i<80 ? `animation:rise .45s ease both;animation-delay:${Math.min(i*10,300)}ms` : "";
-  return `<article class="card" style="--c:var(${info.css});${anim}">
+  const linked = !!(item.url && item.url.trim());
+  const tag = linked ? "a" : "article";
+  const attr = linked ? ` href="${item.url.trim()}" target="_blank" rel="noopener"` : "";
+  return `<${tag} class="card${linked?"":" nolink"}"${attr} style="--c:var(${info.css});${anim}">
     <span class="c-label">${info.name}</span>
     <p class="c-title">${item.t}</p>
     <span class="c-yrs">${item.disp||"Placement uncertain"}</span>
     ${item.note?`<p class="c-desc">${item.note}</p>`:""}
     <span class="c-count">${item.rel?("Released "+item.rel):"Release TBA"}</span>
-    <span class="c-arrow" aria-hidden="true">&#8599;</span></article>`;
+    <span class="c-arrow" aria-hidden="true">&#8599;</span></${tag}>`;
 }
 const styleSheet=document.createElement("style");
 styleSheet.textContent="@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}";

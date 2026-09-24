@@ -15,10 +15,27 @@ chronology) and **release order** (real-world publication date).
 ├── index.html    The page. Presentation + logic only; fetches data.json at load.
 ├── data.json     Generated output. Do NOT hand-edit — it's overwritten by build.py.
 ├── data.csv      Source of truth. Edit this to add, change, or remove entries.
+├── editor.html   Visual editor — add/edit entries with a form, export both files.
 └── build.py      Regenerates data.json from data.csv.
 ```
 
 `data.csv` is the file you edit; `data.json` is generated from it.
+
+## Editing without hand-coding: editor.html
+
+Prefer a form over a spreadsheet? Open `editor.html` (served over http — see
+"Running locally"). It auto-loads `data.json`, lists every entry, and gives you
+proper fields for each column. `era` is derived live from the year as you type.
+
+- **Add / edit / duplicate / delete / reorder** entries.
+- **Search and sort** (file order, story order, or release date).
+- **Italicize** helper wraps selected title text in `<em>`, with a live preview.
+- **Export** buttons download a fresh `data.json` (era derived) and `data.csv`,
+  both in the exact formats used here. Drop the downloads into this folder,
+  replacing the old files, then commit.
+
+If you're not running a local server, click **Import file…** in the editor to load
+your existing `data.json` or `data.csv` from disk.
 
 ## Editing the timeline
 
@@ -33,6 +50,7 @@ editor. Each row is one entry.
 | `t`    | Title. May contain `<em>…</em>` for italics |
 | `rel`  | Real-world release date, `YYYY-MM-DD`, or blank if unknown/unreleased |
 | `note` | Optional note shown on the card, or blank |
+| `url`  | Optional link to the media. When set, the card becomes clickable. Blank if none yet |
 
 **Format codes:** `F` film · `N` novel · `JR` junior novel · `YR` young-reader ·
 `VG` video game · `TV` TV episode · `C` comic · `SS` short story · `A` audio drama ·

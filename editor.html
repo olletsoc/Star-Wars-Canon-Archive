@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canon Media Data Editor</title>
+<style>
+  :root{
+    --paper:#05070d;--paper-2:#0d111c;--paper-3:#161d30;--panel:#0d111c;--ink:#e8ecf5;--ink-soft:#8b93a8;
+    --line:#1e2740;--line-2:#161d2b;--gold:#f2c14e;--gold-deep:#f2c14e;--purple:#c98bdb;--danger:#e0574f;
+    --field:#10162a;--shadow:rgba(0,0,0,.5);
+    --era-dawn:#7d93aa;--era-highrepublic:#f2c14e;--era-fall:#d64a44;--era-reign:#6b83b8;
+    --era-rebellion:#e5842f;--era-newrepublic:#3fa870;--era-firstorder:#d1495f;--era-beyond:#a877e0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);
+    background-image:radial-gradient(ellipse at top,#0a1020 0%,#05070d 55%),radial-gradient(circle at 88% 4%,rgba(201,139,219,.06),transparent 42%);
+    background-attachment:fixed;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .kick{font-family:"Futura","Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.14em;}
+  a{color:var(--gold-deep);}
+  /* ---- header ---- */
+  header{position:sticky;top:0;z-index:20;background:linear-gradient(var(--paper),var(--paper) 82%,rgba(5,7,13,0));
+    border-bottom:1px solid var(--line);padding:14px 22px 12px;}
+  .hrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;max-width:1360px;margin:0 auto;}
+  h1{font-family:"Futura","Trebuchet MS",sans-serif;font-size:20px;margin:0;font-weight:800;letter-spacing:-.01em;}
+  h1 .sub{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:600;margin-top:3px;}
+  .stats{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11.5px;color:var(--ink-soft);margin-left:2px;}
+  .stats b{color:var(--gold);}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;}
+  button.btn{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.03em;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 13px;cursor:pointer;
+    transition:.14s;white-space:nowrap;}
+  button.btn:hover{border-color:var(--gold);transform:translateY(-1px);}
+  button.btn.gold{background:var(--gold);border-color:var(--gold);color:#0b0f1a;}
+  button.btn.gold:hover{background:#ffce5c;box-shadow:0 4px 14px rgba(242,193,78,.25);}
+  button.btn.ghost{background:transparent;}
+  button.btn.on{background:var(--gold);border-color:var(--gold);color:#0b0f1a;}
+  button.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+  /* ---- layout ---- */
+  .wrap{max-width:1360px;margin:0 auto;padding:18px 22px 80px;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(360px,1fr);gap:22px;}
+  @media (max-width:940px){ .wrap{grid-template-columns:1fr;} }
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 3px var(--shadow);}
+  .panel-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line-2);}
+  .panel-h h2{font-size:12px;margin:0;letter-spacing:.14em;color:var(--ink-soft);}
+  .panel-h .spacer{margin-left:auto;}
+  /* ---- list controls ---- */
+  .listctl{display:flex;gap:8px;align-items:center;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid var(--line-2);}
+  .search{flex:1;min-width:150px;font-family:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:var(--field);color:var(--ink);}
+  .search:focus{outline:none;border-color:var(--gold);}
+  select.mini,.listctl label{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11.5px;color:var(--ink-soft);}
+  select.mini{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--field);color:var(--ink);}
+  /* ---- table ---- */
+  .tablewrap{max-height:calc(100vh - 240px);overflow:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;}
+  thead th{position:sticky;top:0;background:#0b0f18;z-index:1;font-family:"Futura","Trebuchet MS",sans-serif;
+    font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-align:left;
+    padding:8px 10px;border-bottom:1px solid var(--line);}
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;}
+  tbody tr{cursor:pointer;}
+  tbody tr:hover{background:var(--paper-3);}
+  tbody tr.sel{background:rgba(242,193,78,.10);box-shadow:inset 3px 0 0 var(--gold);}
+  td.t em{font-style:italic;}
+  .badge{display:inline-block;font-family:"Futura","Trebuchet MS",sans-serif;font-size:8.5px;font-weight:800;
+    letter-spacing:.05em;color:#0b0f1a;border-radius:5px;padding:2px 6px;white-space:nowrap;}
+  .yrs{font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap;}
+  .fmt-pill{display:inline-block;font-family:"Futura","Trebuchet MS",sans-serif;font-size:9px;font-weight:800;
+    border:1px solid var(--c);color:var(--c);border-radius:4px;padding:1px 5px;}
+  .rowbtns{display:flex;gap:3px;}
+  .rowbtns button{border:1px solid var(--line);background:var(--field);border-radius:5px;width:22px;height:22px;
+    cursor:pointer;font-size:11px;line-height:1;color:var(--ink-soft);padding:0;}
+  .rowbtns button:hover{border-color:var(--gold);color:var(--gold);}
+  .empty{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:14px;}
+  /* ---- form ---- */
+  form{padding:14px 16px;}
+  .field{margin-bottom:13px;}
+  .field label{display:block;font-family:"Futura","Trebuchet MS",sans-serif;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;}
+  .field .hint{font-family:"Futura","Trebuchet MS",sans-serif;text-transform:none;letter-spacing:0;font-size:10px;color:#6f778f;margin-left:6px;}
+  .field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:14px;border:1px solid var(--line);
+    border-radius:8px;padding:9px 11px;background:var(--field);color:var(--ink);}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#131a2e;}
+  .field input::placeholder,.field textarea::placeholder,.search::placeholder{color:var(--ink-soft);opacity:.7;}
+  .field textarea{resize:vertical;min-height:52px;}
+  .inline{display:flex;gap:8px;}
+  .inline > *{flex:1;}
+  .withbtn{display:flex;gap:6px;}
+  .withbtn input{flex:1;}
+  .tinybtn{font-family:"Futura","Trebuchet MS",sans-serif;font-size:10px;font-weight:700;border:1px solid var(--line);
+    background:var(--field);border-radius:7px;padding:0 10px;cursor:pointer;color:var(--ink-soft);white-space:nowrap;}
+  .tinybtn:hover{border-color:var(--gold);color:var(--gold);}
+  .preview{font-size:14px;padding:8px 11px;background:rgba(255,255,255,.03);border:1px dashed var(--line);border-radius:8px;min-height:20px;color:var(--ink);}
+  .preview em{font-style:italic;}
+  .erabadge{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11px;font-weight:800;color:#0b0f1a;border-radius:6px;padding:5px 10px;display:inline-block;}
+  .formbtns{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+  .msg{font-family:"Futura","Trebuchet MS",sans-serif;font-size:11px;padding:7px 11px;border-radius:8px;margin:0 16px 12px;display:none;}
+  .msg.show{display:block;}
+  .msg.ok{background:rgba(63,168,112,.15);color:#7fdcab;border:1px solid rgba(63,168,112,.35);}
+  .msg.err{background:rgba(224,87,79,.15);color:#f0928c;border:1px solid rgba(224,87,79,.35);}
+  .note-help{font-size:12px;color:var(--ink-soft);padding:0 16px 14px;}
+  code{font-family:"SF Mono","Courier New",monospace;background:rgba(242,193,78,.14);color:var(--gold);padding:1px 5px;border-radius:4px;font-size:12px;}
+  footer{max-width:1360px;margin:0 auto;padding:0 22px;color:var(--ink-soft);font-size:12px;}
+  @media print{ .toolbar,.listctl,.panel:last-child,.rowbtns{display:none;} header{position:static;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <h1>Canon Media Data Editor<span class="sub kick">Star Wars Chronology · data.csv + data.json</span></h1>
+    <span class="stats" id="stats">No data loaded</span>
+    <div class="toolbar">
+      <input type="file" id="file" accept=".json,.csv" style="display:none">
+      <button class="btn ghost" id="importBtn">Import file…</button>
+      <button class="btn" id="dlCsv">Download data.csv</button>
+      <button class="btn gold" id="dlJson">Download data.json</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- LEFT: list -->
+  <section class="panel">
+    <div class="listctl">
+      <input class="search" id="search" placeholder="Search titles, dates, notes…">
+      <label>Sort
+        <select class="mini" id="sort">
+          <option value="file">File order</option>
+          <option value="story">Story (year)</option>
+          <option value="release">Release date</option>
+        </select>
+      </label>
+      <button class="btn ghost" id="missingBtn" title="Show only entries without a link">Needs link</button>
+      <button class="btn ghost" id="sortStory" title="Reorder the underlying list into story order">Reorder → story</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th style="width:74px">Era</th><th style="width:70px">Year</th><th style="width:44px">Fmt</th>
+          <th>Title</th><th style="width:96px">Release</th><th style="width:66px"></th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="emptyState">
+        No entries yet.<br><br>Click <b>Import file…</b> to load your existing <code>data.json</code> or <code>data.csv</code>,
+        or add a new entry with the form.
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: form + export -->
+  <section class="panel">
+    <div class="panel-h"><h2 class="kick" id="formTitle">NEW ENTRY</h2>
+      <div class="spacer"></div>
+      <span class="erabadge" id="eraBadge" style="background:var(--era-dawn)">—</span>
+    </div>
+    <div class="msg" id="msg"></div>
+    <form id="form" autocomplete="off">
+      <div class="inline">
+        <div class="field">
+          <label for="y">Year <span class="hint">− = BBY, 0/+ = ABY</span></label>
+          <input type="number" id="y" step="1" value="0">
+        </div>
+        <div class="field">
+          <label for="f">Format</label>
+          <select id="f"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="disp">Date label <span class="hint">shown on the card</span></label>
+        <div class="withbtn">
+          <input type="text" id="disp" placeholder="e.g. 382 BBY">
+          <button type="button" class="tinybtn" id="autoDisp">Auto</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="t">Title <span class="hint">select text, then Italicize for &lt;em&gt;</span></label>
+        <div class="withbtn">
+          <input type="text" id="t" placeholder="e.g. The High Republic: Convergence">
+          <button type="button" class="tinybtn" id="italic">Italicize</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview"></div>
+      </div>
+      <div class="field">
+        <label for="rel">Release date <span class="hint">YYYY-MM-DD, or blank</span></label>
+        <input type="text" id="rel" placeholder="2022-11-01" pattern="[0-9X\-]*">
+      </div>
+      <div class="field">
+        <label for="note">Note <span class="hint">optional</span></label>
+        <textarea id="note" placeholder="e.g. Occurs concurrently with …"></textarea>
+      </div>
+      <div class="field">
+        <label for="url">Link <span class="hint">optional — URL to the media</span></label>
+        <input type="url" id="url" placeholder="https://…">
+      </div>
+      <div class="formbtns">
+        <button type="submit" class="btn gold" id="saveBtn">Add entry</button>
+        <button type="button" class="btn" id="newBtn">Clear / New</button>
+        <button type="button" class="btn ghost" id="dupBtn" disabled>Duplicate</button>
+        <button type="button" class="btn ghost" id="delBtn" disabled style="margin-left:auto;color:var(--danger);border-color:rgba(224,87,79,.4)">Delete</button>
+      </div>
+    </form>
+    <p class="note-help">
+      Exports match the project exactly: <code>data.json</code> derives <code>era</code> from the year;
+      <code>data.csv</code> is the editable source (no era column). Drop the downloaded files into your
+      repo folder, replacing the old ones.
+    </p>
+  </section>
+</div>
+<footer>Tip: to edit in place instead of downloading, run the editor from a served copy of the project folder.</footer>
+
+<script>
+const FORMATS = {
+  F:{name:"Film",css:"#d9a520"}, N:{name:"Novel",css:"#5f74d6"}, JR:{name:"Junior novel",css:"#7d8ce0"},
+  YR:{name:"Young reader",css:"#2f9d9d"}, VG:{name:"Video game",css:"#3f9d54"}, TV:{name:"TV episode",css:"#d64a44"},
+  C:{name:"Comic",css:"#d1772a"}, SS:{name:"Short story",css:"#9a6cd4"}, A:{name:"Audio drama",css:"#d15a8f"},
+  RPG:{name:"Roleplaying",css:"#a5713f"}, P:{name:"Promotional",css:"#828aa0"}
+};
+const ERAS = {
+  dawn:{name:"Dawn"}, highrepublic:{name:"High Republic"}, fall:{name:"Fall of the Jedi"},
+  reign:{name:"Reign of the Empire"}, rebellion:{name:"Age of Rebellion"}, newrepublic:{name:"New Republic"},
+  firstorder:{name:"First Order"}, beyond:{name:"Beyond"}
+};
+function eraOf(y){
+  if(y<=-500) return "dawn"; if(y<=-100) return "highrepublic";
+  if(y<=-19) return "fall"; if(y<0) return "reign";
+  if(y<=4) return "rebellion"; if(y<34) return "newrepublic";
+  if(y<=35) return "firstorder"; return "beyond";
+}
+function dispAuto(y){ y=parseInt(y,10)||0; return y<0 ? Math.abs(y)+" BBY" : y+" ABY"; }
+
+// ---------- state ----------
+let rows = [];          // {y, disp, f, t, rel, note, url}
+let selected = null;    // index into rows
+let missingOnly = false;// filter: show only entries without a link
+
+// ---------- elements ----------
+const $ = id=>document.getElementById(id);
+const tbody=$("tbody"), emptyState=$("emptyState"), stats=$("stats");
+const fY=$("y"), fF=$("f"), fDisp=$("disp"), fT=$("t"), fRel=$("rel"), fNote=$("note"), fUrl=$("url");
+const preview=$("preview"), eraBadge=$("eraBadge"), formTitle=$("formTitle"), saveBtn=$("saveBtn");
+
+// build format dropdown
+Object.entries(FORMATS).forEach(([code,info])=>{
+  const o=document.createElement("option"); o.value=code; o.textContent=code+" — "+info.name; fF.appendChild(o);
+});
+
+// ---------- rendering ----------
+function esc(s){ return String(s).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c])); }
+function titleHTML(t){ // allow only <em>
+  return esc(t).replace(/&lt;em&gt;/g,"<em>").replace(/&lt;\/em&gt;/g,"</em>");
+}
+function orderedIndexes(){
+  let idx = rows.map((_,i)=>i);
+  const s=$("sort").value;
+  if(s==="story") idx.sort((a,b)=> (rows[a].y-rows[b].y) || (a-b));
+  else if(s==="release") idx.sort((a,b)=>{
+    const ra=rows[a].rel||"￿", rb=rows[b].rel||"￿";
+    return ra.localeCompare(rb) || (a-b);
+  });
+  return idx;
+}
+function render(){
+  const q=$("search").value.trim().toLowerCase();
+  const idx=orderedIndexes().filter(i=>{
+    const r=rows[i];
+    if(missingOnly && r.url && r.url.trim()) return false;
+    if(q && !(r.t+" "+r.disp+" "+(r.note||"")+" "+(r.rel||"")).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  tbody.innerHTML="";
+  emptyState.style.display = rows.length ? "none" : "block";
+  idx.forEach(i=>{
+    const r=rows[i], era=eraOf(parseInt(r.y,10)||0), info=FORMATS[r.f]||{name:r.f,css:"#888"};
+    const tr=document.createElement("tr");
+    if(i===selected) tr.className="sel";
+    tr.innerHTML =
+      `<td><span class="badge" style="background:var(--era-${era})">${ERAS[era].name.split(" ")[0]}</span></td>`+
+      `<td class="yrs">${esc(r.disp||"—")}</td>`+
+      `<td><span class="fmt-pill" style="--c:${info.css}">${esc(r.f)}</span></td>`+
+      `<td class="t">${titleHTML(r.t)}${r.url?` <a href="${r.url}" target="_blank" rel="noopener" title="Open link" style="color:var(--gold);text-decoration:none">&#8599;</a>`:""}${r.note?` <span style="color:#7b8296;font-size:11px">· ${esc(r.note)}</span>`:""}</td>`+
+      `<td class="yrs">${esc(r.rel||"")}</td>`+
+      `<td><div class="rowbtns">`+
+        `<button data-up="${i}" title="Move up">↑</button>`+
+        `<button data-down="${i}" title="Move down">↓</button>`+
+      `</div></td>`;
+    tr.addEventListener("click",e=>{ if(e.target.tagName==="A"||e.target.dataset.up!==undefined||e.target.dataset.down!==undefined) return; select(i); });
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>move(+b.dataset.up,-1));
+  tbody.querySelectorAll("[data-down]").forEach(b=>b.onclick=()=>move(+b.dataset.down,1));
+  updateStats();
+}
+function updateStats(){
+  const mb=$("missingBtn");
+  if(!rows.length){ stats.textContent="No data loaded"; if(mb) mb.textContent="Needs link"; return; }
+  const tally={}; rows.forEach(r=>{ const e=eraOf(parseInt(r.y,10)||0); tally[e]=(tally[e]||0)+1; });
+  const parts=Object.keys(ERAS).filter(e=>tally[e]).map(e=>`${ERAS[e].name.split(" ")[0]} ${tally[e]}`);
+  const missing=rows.filter(r=>!(r.url&&r.url.trim())).length;
+  if(mb) mb.textContent = missingOnly ? `Show all` : `Needs link (${missing})`;
+  stats.innerHTML=`<b>${rows.length}</b> entries &nbsp;·&nbsp; <b>${missing}</b> need links &nbsp;·&nbsp; ${parts.join(" · ")}`;
+}
+function move(i,dir){
+  const j=i+dir; if(j<0||j>=rows.length) return;
+  [rows[i],rows[j]]=[rows[j],rows[i]];
+  if(selected===i) selected=j; else if(selected===j) selected=i;
+  $("sort").value="file"; render();
+}
+
+// ---------- form ----------
+function refreshEra(){
+  const y=parseInt(fY.value,10)||0, era=eraOf(y);
+  eraBadge.textContent=ERAS[era].name; eraBadge.style.background=`var(--era-${era})`;
+}
+function refreshPreview(){ preview.innerHTML = titleHTML(fT.value||"") || '<span style="color:#6f778f">— title preview —</span>'; }
+function select(i){
+  selected=i; const r=rows[i];
+  formTitle.textContent="EDITING ENTRY #"+(i+1);
+  fY.value=r.y; fF.value=r.f; fDisp.value=r.disp||""; fT.value=r.t||""; fRel.value=r.rel||""; fNote.value=r.note||""; fUrl.value=r.url||"";
+  saveBtn.textContent="Update entry"; $("delBtn").disabled=false; $("dupBtn").disabled=false;
+  refreshEra(); refreshPreview(); render();
+  document.querySelector(".panel:last-child").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function clearForm(){
+  selected=null; formTitle.textContent="NEW ENTRY";
+  fY.value=0; fF.value="F"; fDisp.value=""; fT.value=""; fRel.value=""; fNote.value=""; fUrl.value="";
+  saveBtn.textContent="Add entry"; $("delBtn").disabled=true; $("dupBtn").disabled=true;
+  refreshEra(); refreshPreview();
+}
+function flash(text,ok){ const m=$("msg"); m.textContent=text; m.className="msg show "+(ok?"ok":"err"); setTimeout(()=>m.classList.remove("show"),3200); }
+
+$("form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const t=fT.value.trim();
+  if(!t){ flash("Title is required.",false); return; }
+  if(fY.value===""||isNaN(parseInt(fY.value,10))){ flash("Year must be a whole number.",false); return; }
+  const rec={ y:parseInt(fY.value,10), f:fF.value,
+    disp:(fDisp.value.trim()||dispAuto(fY.value)), t:t,
+    rel:fRel.value.trim(), note:fNote.value.trim(), url:fUrl.value.trim() };
+  if(selected===null){ rows.push(rec); selected=null; flash("Entry added.",true); clearForm(); }
+  else { rows[selected]=rec; flash("Entry updated.",true); }
+  render();
+});
+$("newBtn").onclick=clearForm;
+$("delBtn").onclick=()=>{ if(selected===null) return; if(!confirm("Delete this entry?")) return; rows.splice(selected,1); clearForm(); render(); flash("Entry deleted.",true); };
+$("dupBtn").onclick=()=>{ if(selected===null) return; const c={...rows[selected]}; rows.splice(selected+1,0,c); select(selected+1); flash("Entry duplicated.",true); };
+$("autoDisp").onclick=()=>{ fDisp.value=dispAuto(fY.value); };
+$("italic").onclick=()=>{
+  const s=fT.selectionStart,e=fT.selectionEnd,v=fT.value;
+  if(s===e){ fT.value=v+"<em></em>"; fT.focus(); fT.selectionStart=fT.selectionEnd=fT.value.length-5; }
+  else { fT.value=v.slice(0,s)+"<em>"+v.slice(s,e)+"</em>"+v.slice(e); }
+  refreshPreview();
+};
+fY.addEventListener("input",refreshEra);
+fT.addEventListener("input",refreshPreview);
+$("search").addEventListener("input",render);
+$("missingBtn").onclick=()=>{ missingOnly=!missingOnly; $("missingBtn").classList.toggle("on",missingOnly); render(); };
+$("sort").addEventListener("change",render);
+$("sortStory").onclick=()=>{
+  rows.sort((a,b)=>(a.y-b.y));  // stable in modern engines
+  $("sort").value="file"; selected=null; clearForm(); render(); flash("List reordered into story order.",true);
+};
+
+// ---------- serializers (match build.py / project exactly) ----------
+function toJSON(list){
+  const lines=list.map(r=>{
+    const y=parseInt(r.y,10)||0;
+    const rel=r.rel&&r.rel.trim(), note=r.note&&r.note.trim(), url=r.url&&r.url.trim();
+    return '  {"era":'+JSON.stringify(eraOf(y))+',"f":'+JSON.stringify(r.f||"")+
+           ',"t":'+JSON.stringify(r.t||"")+',"disp":'+JSON.stringify((r.disp&&r.disp.trim())||"—")+
+           ',"y":'+y+',"rel":'+(rel?JSON.stringify(rel):"null")+',"note":'+(note?JSON.stringify(note):"null")+
+           ',"url":'+(url?JSON.stringify(url):"null")+'}';
+  });
+  return "[\n"+lines.join(",\n")+"\n]\n";
+}
+function csvField(s){ s=(s==null?"":String(s)); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCSV(list){
+  const head="y,disp,f,t,rel,note,url";
+  const lines=list.map(r=>[
+    parseInt(r.y,10)||0, (r.disp&&r.disp.trim())||"—", r.f||"", r.t||"",
+    r.rel?r.rel.trim():"", r.note?r.note.trim():"", r.url?r.url.trim():""
+  ].map(csvField).join(","));
+  return head+"\n"+lines.join("\n")+"\n";
+}
+function download(name,text,mime){
+  const blob=new Blob([text],{type:mime}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+$("dlJson").onclick=()=>{ if(!rows.length){flash("Nothing to export yet.",false);return;} download("data.json",toJSON(rows),"application/json"); };
+$("dlCsv").onclick =()=>{ if(!rows.length){flash("Nothing to export yet.",false);return;} download("data.csv",toCSV(rows),"text/csv"); };
+
+// ---------- importing ----------
+function parseCSV(text){
+  const out=[]; let row=[], cur="", i=0, q=false, n=text.length;
+  while(i<n){ const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i+=2;continue;} q=false;i++;continue;} cur+=c;i++; }
+    else { if(c==='"'){q=true;i++;} else if(c===','){row.push(cur);cur="";i++;}
+      else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n')i++; row.push(cur);out.push(row);row=[];cur="";i++; }
+      else { cur+=c;i++; } }
+  }
+  if(cur.length||row.length){ row.push(cur); out.push(row); }
+  return out.filter(r=>r.length && r.some(c=>c.trim()!==""));
+}
+function loadCSV(text){
+  const grid=parseCSV(text); if(!grid.length) throw new Error("empty CSV");
+  const head=grid[0].map(h=>h.trim().toLowerCase()); const col=n=>head.indexOf(n);
+  const iy=col("y"),idsp=col("disp"),ifmt=col("f"),it=col("t"),ir=col("rel"),inn=col("note"),iu=col("url");
+  if(iy<0||it<0) throw new Error("CSV needs at least 'y' and 't' columns");
+  return grid.slice(1).map(r=>({
+    y:parseInt((r[iy]||"").trim(),10)||0, disp:(r[idsp]||"").trim(), f:(r[ifmt]||"").trim().toUpperCase(),
+    t:(r[it]||"").trim(), rel:(ir>=0?r[ir]||"":"").trim(), note:(inn>=0?r[inn]||"":"").trim(), url:(iu>=0?r[iu]||"":"").trim()
+  })).filter(r=>r.t);
+}
+function loadJSON(text){
+  const arr=JSON.parse(text); if(!Array.isArray(arr)) throw new Error("JSON is not an array");
+  return arr.map(o=>({ y:parseInt(o.y,10)||0, disp:(o.disp||"").trim()==="—"?"":(o.disp||""), f:(o.f||"").toUpperCase(),
+    t:o.t||"", rel:o.rel||"", note:o.note||"", url:o.url||"" })).filter(r=>r.t);
+}
+function ingest(text,name){
+  try{
+    rows = /\.csv$/i.test(name) || (!/^\s*[\[{]/.test(text)) ? loadCSV(text) : loadJSON(text);
+    selected=null; clearForm(); $("sort").value="file"; render();
+    flash(`Loaded ${rows.length} entries from ${name}.`,true);
+  }catch(err){ flash("Couldn't parse "+name+": "+err.message,false); }
+}
+$("importBtn").onclick=()=>$("file").click();
+$("file").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader(); rd.onload=()=>ingest(rd.result,f.name); rd.readAsText(f); e.target.value="";
+});
+
+// ---------- boot: try to auto-load the sibling data.json ----------
+clearForm();
+fetch("data.json").then(r=>{ if(!r.ok) throw 0; return r.text(); })
+  .then(t=>{ rows=loadJSON(t); render(); flash(`Loaded ${rows.length} entries from data.json.`,true); })
+  .catch(()=>{ render(); });
+</script>
+</body>
+</html>
